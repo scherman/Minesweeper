@@ -10,6 +10,5 @@ public class EmptyCell extends Cell{
 	@Override
 	public Boolean isMine() {
 		return false;
-	}
-	
+	}	
 }

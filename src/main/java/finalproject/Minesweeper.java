@@ -5,12 +5,21 @@ public class Minesweeper implements IMinesweeper{
 	Grid grid;
 	
 	public Minesweeper (int rows, int columns) {
+		// Creación del escenario de juego
 		grid = new Grid(rows, columns);
 		grid.createScene();
 	}
 
 	public void uncover(int row, int col) {
-
+		Cell uncoveredCell = grid.getCell(row, col);
+		uncoveredCell.setOpened(true);
+		
+		if (!uncoveredCell.isMine()) {
+			
+		} else {
+			isGameOver();
+		}
+		
 	}
 
 	public void flagAsMine(int row, int col) {
