@@ -3,33 +3,43 @@ package finalproject;
 public class Grid {
 	
 	Cell [][] scene;
-	int x;
-	int y;
+	int maxRow;
+	int maxColumn;
 	int numberOfMines, cellSelectedNumberOfMines;
+	
+	public static void main (String[] args) {
+		Grid grid = new Grid(10, 10);
+		grid.createScene();
+		System.out.println("Exitoso");
+		System.out.println(grid.numberOfMines + " minas generadas.");
+	}
 		
 	public Grid (int x, int y) {
-		this.x = x;
-		this.y = y;
 		scene = new Cell [x][y];
+		this.maxRow = x;
+		this.maxColumn = y;
 		numberOfMines = 0;
 	}
 	
 	public void createScene () {
 		
 		// Objecto delegado de la lógica de cuantas minas y celdas ubicar
-		CellLogic objectsGenerator = new CellLogic(x, y);
+		CellLogic objectsGenerator = new CellLogic(maxRow, maxColumn);
 		
 		// Recorre la matriz y va agregando los objetos que le pasa objectsGenerator
-		for (int row = 0; row < x; row ++) {
-			 for (int column = 0; column < y; column++) {
+		for (int row = 0; row < maxRow; row ++) {
+			 for (int column = 0; column < maxColumn; column++) {
 				 scene[row][column] = objectsGenerator.getNewObject();
 			 }
 		}
 		
 		// Analizo el mapa de juego: cuantas minas tiene cada celda al rededor y cuantas minas se generaron en total
-		for (int row = 0; row < x; row ++) {
-			 for (int column = 0; column < y; column++) {
+		for (int row = 0; row < maxRow; row ++) {
+			 for (int column = 0; column < maxColumn; column++) {
 				 scene[row][column].setSurroundingMines(countSurroundingMines(row, column));
+				 if (scene[row][column].isMine()) {
+					 this.numberOfMines ++;
+				 }
 			 }
 		}
 	}
@@ -50,60 +60,59 @@ public class Grid {
 			verifyIsMine(scene[row + 1][column]);
 			verifyIsMine(scene[row][column + 1]);
 			verifyIsMine(scene[row + 1][column + 1]);
-		} else if (row == x & column == y) {
+		} else if (row == maxRow - 1 & column == maxColumn - 1) {
 			// Punta inferior derecha
 			isPeak = true;
 			verifyIsMine(scene[row - 1][column]);
 			verifyIsMine(scene[row][column - 1]);
 			verifyIsMine(scene[row - 1][column - 1]);
-		} else if (row == x & column == 0) {
+		} else if (row == maxRow - 1 & column == 0) {
 			// Punta inferior izquierda
 			isPeak = true;
 			verifyIsMine(scene[row - 1][column]);
 			verifyIsMine(scene[row][column + 1]);
 			verifyIsMine(scene[row - 1][column + 1]);
-		} else if (row == 0 & column == y) {
-			// Punta inferior izquierda
+		} else if (row == 0 & column == maxColumn - 1 ) {
+			// Punta superior derecha
 			isPeak = true;
 			verifyIsMine(scene[row + 1][column]);
 			verifyIsMine(scene[row][column - 1]);
 			verifyIsMine(scene[row + 1][column - 1]);
 		}
 		
-		
-		// Si la celda esta pegada a algún borde...
-		if (row != 0 & column == 0) {
-			// Pegada al borde izquierdo
-			surroundsBorder = true;
-			verifyIsMine(scene[row + 1][column]);
-			verifyIsMine(scene[row][column - 1]);
-			verifyIsMine(scene[row][column + 1]);
-			verifyIsMine(scene[row + 1][column - 1]);
-			verifyIsMine(scene[row + 1][column + 1]);
-		} else if (row != 0 & column == y) {
-			// Pegada al borde derecho
-			surroundsBorder = true;
-			verifyIsMine(scene[row - 1][column]);
-			verifyIsMine(scene[row - 1][column - 1]);
-			verifyIsMine(scene[row][column - 1]);
-			verifyIsMine(scene[row + 1][column]);
-			verifyIsMine(scene[row + 1][column - 1]);
-		} else if (row == 0 & column !=0) {
-			// Pegada al borde superior
-			surroundsBorder = true;
-			verifyIsMine(scene[row][column + 1]);
-			verifyIsMine(scene[row][column - 1]);
-			verifyIsMine(scene[row + 1][column]);
-			verifyIsMine(scene[row + 1][column + 1]);
-			verifyIsMine(scene[row + 1][column - 1]);
-		} else if (row == x & column !=0) {
-			// Pegada al borde inferior
-			surroundsBorder = true;
-			verifyIsMine(scene[row][column - 1]);
-			verifyIsMine(scene[row][column + 1]);
-			verifyIsMine(scene[row - 1][column]);
-			verifyIsMine(scene[row - 1][column - 1]);
-			verifyIsMine(scene[row - 1][column + 1]);
+		if (!isPeak) {
+			// Si la celda esta pegada a algún borde...
+			if (row != 0 & column == 0) {
+				// Pegada al borde izquierdo
+				surroundsBorder = true;
+				verifyIsMine(scene[row + 1][column]);
+				verifyIsMine(scene[row][column + 1]);
+				verifyIsMine(scene[row + 1][column + 1]);
+			} else if (row != 0 & column == maxColumn - 1 ) {
+				// Pegada al borde derecho
+				surroundsBorder = true;
+				verifyIsMine(scene[row - 1][column]);
+				verifyIsMine(scene[row - 1][column - 1]);
+				verifyIsMine(scene[row][column - 1]);
+				verifyIsMine(scene[row + 1][column]);
+				verifyIsMine(scene[row + 1][column - 1]);
+			} else if (row == 0 & column !=0) {
+				// Pegada al borde superior
+				surroundsBorder = true;
+				verifyIsMine(scene[row][column + 1]);
+				verifyIsMine(scene[row][column - 1]);
+				verifyIsMine(scene[row + 1][column]);
+				verifyIsMine(scene[row + 1][column + 1]);
+				verifyIsMine(scene[row + 1][column - 1]);
+			} else if (row == maxRow - 1  & column !=0) {
+				// Pegada al borde inferior
+				surroundsBorder = true;
+				verifyIsMine(scene[row][column - 1]);
+				verifyIsMine(scene[row][column + 1]);
+				verifyIsMine(scene[row - 1][column]);
+				verifyIsMine(scene[row - 1][column - 1]);
+				verifyIsMine(scene[row - 1][column + 1]);
+			}
 		}
 		
 		// Si está por el medio...
