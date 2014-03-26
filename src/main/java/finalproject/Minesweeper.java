@@ -1,15 +1,22 @@
 package finalproject;
 
+import java.awt.DisplayMode;
+import java.util.Set;
+
+import com.despegar.highflight.utils.Matrix2DCellPosition;
+import com.despegar.highflight.utils.MatrixUtils;
+
 public class Minesweeper implements IMinesweeper{
 	
 	Grid grid;
 	
 	public static void main (String[] args) {
-		Minesweeper ms = new Minesweeper(5,5);
-
-		ms.flagAsMine(1,2);
-		
+		Minesweeper ms = new Minesweeper(5, 5);
+		ms.displayInternal();
+		System.out.println("\n");
+		ms.uncover(2, 3);
 	}
+	
 	public Minesweeper (int rows, int columns) {
 		// Creación del escenario de juego
 		grid = new Grid(rows, columns);
@@ -25,31 +32,46 @@ public class Minesweeper implements IMinesweeper{
 		
 		if (!uncoveredCell.isMine()) {
 			grid.getCell(row, col).setOpened(true);
+			grid.cascade(row, col);
+			
 			display();
+			
+			//isWinningGame();
 		} else {
 			isGameOver();
 		}
 	}
 
 	public void flagAsMine(int row, int col) {
-		grid.getCell(row, col).setFlagged(true);
-		display();
+		if (grid.getNumberOfFlags() < grid.getNumberOfMines()) {
+			if (!grid.getCell(row, col).isOpen()) {
+				grid.getCell(row, col).setFlagged(true);
+				grid.setNumberOfFlags(grid.getNumberOfFlags() + 1);
+				display();
+				isWinningGame();
+			}
+		}
+
 	}
 
 	public void clearFlag(int row, int col) {
-		grid.getCell(row, col).setFlagged(false);
-		display();
-		
+		if (grid.getCell(row, col).isFlagged()) {
+			grid.getCell(row, col).setFlagged(false);
+			grid.setNumberOfFlags(grid.getNumberOfFlags() - 1);
+			display();
+		}
 	}
 
 	public boolean isGameOver() {
-		// TODO Auto-generated method stub
+		System.out.println("Partida perdida");
 		return false;
 	}
 
 	public boolean isWinningGame() {
-		// TODO Auto-generated method stub
-		return false;
+		if (grid.allMinesHasFlag() & grid.allCellsUncovered()) {
+			System.out.println("Partida ganada");
+		}
+		return true;
 	}
 
 	public void display() {
@@ -91,4 +113,5 @@ public class Minesweeper implements IMinesweeper{
 			System.out.print("\n");
 		}
 	}
+	
 }

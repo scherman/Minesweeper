@@ -1,17 +1,27 @@
 package finalproject;
 
+import java.util.List;
+import java.util.Set;
+
+import com.despegar.highflight.utils.Matrix2DCellPosition;
+import com.despegar.highflight.utils.MatrixUtils;
+
 public class Grid {
 	
 	Cell [][] scene;
+	int [][] binaryScene;
 	int maxRow;
 	int maxColumn;
 	int numberOfMines, cellSelectedNumberOfMines;
-		
+	int numberOfFlags;
+	
 	public Grid (int x, int y) {
 		scene = new Cell [x][y];
+		binaryScene = new int[x][y];
 		this.maxRow = x;
 		this.maxColumn = y;
 		numberOfMines = 0;
+		numberOfFlags = 0;
 	}
 	
 	public void createScene () {
@@ -26,12 +36,15 @@ public class Grid {
 			 }
 		}
 		
-		// Analizo el mapa de juego: cuantas minas tiene cada celda al rededor y cuantas minas se generaron en total
+		// Analizo el mapa de juego: cuantas minas tiene cada celda alrededor y cuantas minas se generaron en total. Tambien lo parseo en la binaryScene
 		for (int row = 0; row < maxRow; row ++) {
 			 for (int column = 0; column < maxColumn; column++) {
 				 scene[row][column].setSurroundingMines(countSurroundingMines(row, column));
 				 if (scene[row][column].isMine()) {
 					 this.numberOfMines ++;
+					 binaryScene [row][column] = 1;
+				 } else {
+					 binaryScene [row][column] = 0;
 				 }
 			 }
 		}
@@ -39,6 +52,54 @@ public class Grid {
 
 	public Cell getCell (int row, int column) {
 		return scene[row][column];
+	}
+	
+	public int getNumberOfFlags() {
+		return numberOfFlags;
+	}
+
+	public void setNumberOfFlags(int numberOfFlags) {
+		this.numberOfFlags = numberOfFlags;
+	}
+	
+	public int getNumberOfMines() {
+		return numberOfMines;
+	}
+
+	public void setNumberOfMines(int numberOfMines) {
+		this.numberOfMines = numberOfMines;
+	}
+	
+	
+	// allMinesHasFlag y allCellsUncovered pueden unificarse y se hace solo una vez el recorrido pero queda mas desprolijo
+	public Boolean allMinesHasFlag () {
+		Boolean allMinesHasFlag = true;
+		
+		// Recorro las celdas y me fijo si todas las minas estan flaggeadas
+		for (int row = 0; row < maxRow; row ++) {
+			 for (int column = 0; column < maxColumn; column++) {
+				 if (scene[row][column].isMine() & !scene[row][column].isFlagged()) {
+					 allMinesHasFlag = false;
+				 }
+			 }
+		}
+		
+		return allMinesHasFlag;
+	}
+	
+	public Boolean allCellsUncovered () {
+		Boolean allCellsUncovered = true;
+		
+		// Recorro las celdas y me fijo si todas las minas estan flaggeadas
+		for (int row = 0; row < maxRow; row ++) {
+			 for (int column = 0; column < maxColumn; column++) {
+				 if (!scene[row][column].isMine() & scene[row][column].isOpen()) {
+					 allCellsUncovered = false;
+				 }
+			 }
+		}
+		
+		return allCellsUncovered;
 	}
 	
 	private int countSurroundingMines (int row, int column) {
@@ -130,39 +191,11 @@ public class Grid {
 			this.cellSelectedNumberOfMines ++;
 		}
 	}
-
+	
+	public void cascade (int row, int column) {
+		Set<Matrix2DCellPosition> matrix = MatrixUtils.cascade(binaryScene, row, column);
+		for (Matrix2DCellPosition matrix2dCellPosition : matrix) {
+			scene[matrix2dCellPosition.getRow()][matrix2dCellPosition.getColumn()].setOpened(true);
+		}
+	}
 }
-//
-//public static void main(String[] args) {
-//	  Minesweeper m;
-//	  m=new MinesweeperImpl(3,4);
-//	//  m.display();
-//	  m.displayInternal();
-//	  
-//	//  while( m.isGameOver()==false){
-//	//	  m.uncover(0,2);
-//
-//	//  }
-//	//  m.display();
-//}
-//
-//public void display() {
-//	// TODO Auto-generated method stub
-//				
-//	
-//	for (int i=0; i<3; i++) { 
-//      for (int j=0; j<4; j++){ 
-//      	if(cm.thereIsUncovered(i, j)){
-//      		if(cm.thereIsFlag(i, j)){
-//      			System.out.println("F");
-//      		}else{
-//          		System.out.println(cm.getNumber(i, j));
-//      		}
-//     	}else{
-//      		System.out.print("X");
-//      	}
-//      } 
-//      System.out.println(); 
-//  }
-//
-//}
