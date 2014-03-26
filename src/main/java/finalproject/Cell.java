@@ -11,6 +11,8 @@ public abstract class Cell {
 	
 	public abstract Boolean isMine();
 	
+	public abstract String toString();
+	
 	protected Boolean isOpen () {
 		return isOpen;
 	}

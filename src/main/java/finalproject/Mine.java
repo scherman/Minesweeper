@@ -11,5 +11,10 @@ public class Mine extends Cell{
 	public Boolean isMine() {
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "M";
+	}
 	
 }

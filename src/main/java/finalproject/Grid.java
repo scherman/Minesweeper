@@ -6,13 +6,6 @@ public class Grid {
 	int maxRow;
 	int maxColumn;
 	int numberOfMines, cellSelectedNumberOfMines;
-	
-	public static void main (String[] args) {
-		Grid grid = new Grid(10, 10);
-		grid.createScene();
-		System.out.println("Exitoso");
-		System.out.println(grid.numberOfMines + " minas generadas.");
-	}
 		
 	public Grid (int x, int y) {
 		scene = new Cell [x][y];
@@ -86,8 +79,10 @@ public class Grid {
 				// Pegada al borde izquierdo
 				surroundsBorder = true;
 				verifyIsMine(scene[row + 1][column]);
-				verifyIsMine(scene[row][column + 1]);
 				verifyIsMine(scene[row + 1][column + 1]);
+				verifyIsMine(scene[row][column + 1]);
+				verifyIsMine(scene[row - 1][column]);
+				verifyIsMine(scene[row - 1][column + 1]);
 			} else if (row != 0 & column == maxColumn - 1 ) {
 				// Pegada al borde derecho
 				surroundsBorder = true;
@@ -137,3 +132,37 @@ public class Grid {
 	}
 
 }
+//
+//public static void main(String[] args) {
+//	  Minesweeper m;
+//	  m=new MinesweeperImpl(3,4);
+//	//  m.display();
+//	  m.displayInternal();
+//	  
+//	//  while( m.isGameOver()==false){
+//	//	  m.uncover(0,2);
+//
+//	//  }
+//	//  m.display();
+//}
+//
+//public void display() {
+//	// TODO Auto-generated method stub
+//				
+//	
+//	for (int i=0; i<3; i++) { 
+//      for (int j=0; j<4; j++){ 
+//      	if(cm.thereIsUncovered(i, j)){
+//      		if(cm.thereIsFlag(i, j)){
+//      			System.out.println("F");
+//      		}else{
+//          		System.out.println(cm.getNumber(i, j));
+//      		}
+//     	}else{
+//      		System.out.print("X");
+//      	}
+//      } 
+//      System.out.println(); 
+//  }
+//
+//}
