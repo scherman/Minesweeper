@@ -2,9 +2,6 @@ package finalproject;
 
 public abstract class Cell {
 	
-//	public int x;
-//	public int y;
-	
 	public Boolean isOpen = false;
 	public Boolean hasFlag = false;
 	public int surroundingMines;

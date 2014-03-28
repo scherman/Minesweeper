@@ -2,15 +2,14 @@ package finalproject;
 
 import java.util.Random;
 
-// Clase encargada exclusivamente para crear celdas vacías o minas. 
-
-public class CellLogic {
+// Clase encargada exclusivamente para crear celdas emptyCells o minas. 
+public class CellLogicGenerator {
 	
 	int rows;
 	int columns;
 	int numberOfMines;
 	
-	public CellLogic (int rows, int columns) {
+	public CellLogicGenerator (int rows, int columns) {
 		this.rows = rows;
 		this.columns = columns;
 		calculateNumberOfMines();
@@ -21,7 +20,7 @@ public class CellLogic {
 		numberOfMines = (int) (rows * columns * 0.15);
 	}
 	
-	public Cell getNewObject() {
+	public  Cell getNewObject() {
 		Cell object;
 		
 		Random rand = new Random();

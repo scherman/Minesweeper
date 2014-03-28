@@ -14,6 +14,8 @@ public class Grid {
 	int maxColumn;
 	int numberOfMines, cellSelectedNumberOfMines;
 	int numberOfFlags;
+	Boolean gameOver;
+	Boolean gridComplete;
 	
 	public Grid (int x, int y) {
 		scene = new Cell [x][y];
@@ -27,7 +29,7 @@ public class Grid {
 	public void createScene () {
 		
 		// Objecto delegado de la lógica de cuantas minas y celdas ubicar
-		CellLogic objectsGenerator = new CellLogic(maxRow, maxColumn);
+		CellLogicGenerator objectsGenerator = new CellLogicGenerator(maxRow, maxColumn);
 		
 		// Recorre la matriz y va agregando los objetos que le pasa objectsGenerator
 		for (int row = 0; row < maxRow; row ++) {
@@ -70,30 +72,13 @@ public class Grid {
 		this.numberOfMines = numberOfMines;
 	}
 	
-	
-	// allMinesHasFlag y allCellsUncovered pueden unificarse y se hace solo una vez el recorrido pero queda mas desprolijo
-	public Boolean allMinesHasFlag () {
-		Boolean allMinesHasFlag = true;
-		
-		// Recorro las celdas y me fijo si todas las minas estan flaggeadas
-		for (int row = 0; row < maxRow; row ++) {
-			 for (int column = 0; column < maxColumn; column++) {
-				 if (scene[row][column].isMine() & !scene[row][column].isFlagged()) {
-					 allMinesHasFlag = false;
-				 }
-			 }
-		}
-		
-		return allMinesHasFlag;
-	}
-	
 	public Boolean allCellsUncovered () {
 		Boolean allCellsUncovered = true;
 		
 		// Recorro las celdas y me fijo si todas las minas estan flaggeadas
 		for (int row = 0; row < maxRow; row ++) {
 			 for (int column = 0; column < maxColumn; column++) {
-				 if (!scene[row][column].isMine() & scene[row][column].isOpen()) {
+				 if (!scene[row][column].isMine() && !scene[row][column].isOpen()) {
 					 allCellsUncovered = false;
 				 }
 			 }
@@ -101,6 +86,13 @@ public class Grid {
 		
 		return allCellsUncovered;
 	}
+	
+	public void cascade (int row, int column) {
+		Set<Matrix2DCellPosition> matrix = MatrixUtils.cascade(binaryScene, row, column);
+		for (Matrix2DCellPosition matrix2dCellPosition : matrix) {
+			scene[matrix2dCellPosition.getRow()][matrix2dCellPosition.getColumn()].setOpened(true);
+		}
+	}	
 	
 	private int countSurroundingMines (int row, int column) {
 		Boolean isPeak = false;
@@ -189,13 +181,6 @@ public class Grid {
 	private void verifyIsMine (Cell selectedCell) {
 		if (selectedCell.isMine()) {
 			this.cellSelectedNumberOfMines ++;
-		}
-	}
-	
-	public void cascade (int row, int column) {
-		Set<Matrix2DCellPosition> matrix = MatrixUtils.cascade(binaryScene, row, column);
-		for (Matrix2DCellPosition matrix2dCellPosition : matrix) {
-			scene[matrix2dCellPosition.getRow()][matrix2dCellPosition.getColumn()].setOpened(true);
 		}
 	}
 }
