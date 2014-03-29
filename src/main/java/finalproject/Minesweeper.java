@@ -26,6 +26,7 @@ public class Minesweeper implements IMinesweeper{
 		} else {
 			uncoveredCell = grid.getCell(row, col);
 			uncoveredCell.setOpened(true);
+			isGameOver();
 			grid.cascade(row, col);
 		}
 
@@ -52,24 +53,15 @@ public class Minesweeper implements IMinesweeper{
 	}
 
 	public boolean isGameOver() {
-		
 		try {
-			if (uncoveredCell.isMine()) {
-				return true;
-			} else {
-				return false;
-			}
+			return uncoveredCell.isMine();
 		} catch (NullPointerException e) {
 			return false;
 		}
 	}
 
 	public boolean isWinningGame() {
-		if (grid.allCellsUncovered()) {
-			return true;
-		} else {
-			return false;
-		}
+		return grid.allCellsUncovered();
 	}
 
 	public void display() {

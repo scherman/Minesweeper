@@ -29,14 +29,18 @@ public class Grid {
 	public void createScene () {
 		MinesLocationGenerator msGenerator = new MinesLocationGenerator(maxRow, maxColumn);
 		Set<Location> minesLocation = msGenerator.generateMinesLocations();
+		numberOfMines = msGenerator.getNumberOfMines();
 		for (Location mineLocation : minesLocation) {
 			scene[mineLocation.getRow()][mineLocation.getColumn()] = new Mine();
+			binaryScene [mineLocation.getRow()][mineLocation.getColumn()] = 1;
+			
 		}
 		
 		for (int row = 0; row < maxRow; row ++) {
 			 for (int column = 0; column < maxColumn; column++) {
 				 if (scene[row][column] == null) {
 					 scene[row][column] = new EmptyCell();
+					 binaryScene [row][column] = 0;
 				 }
 				 
 			 }
@@ -46,12 +50,12 @@ public class Grid {
 		for (int row = 0; row < maxRow; row ++) {
 			 for (int column = 0; column < maxColumn; column++) {
 				 scene[row][column].setSurroundingMines(countSurroundingMines(row, column));
-				 if (scene[row][column].isMine()) {
-					 this.numberOfMines ++;
-					 binaryScene [row][column] = 1;
-				 } else {
-					 binaryScene [row][column] = 0;
-				 }
+//				 if (scene[row][column].isMine()) {
+//					 this.numberOfMines ++;
+//					 binaryScene [row][column] = 1;
+//				 } else {
+//					 binaryScene [row][column] = 0;
+//				 }
 			 }
 		}
 	}

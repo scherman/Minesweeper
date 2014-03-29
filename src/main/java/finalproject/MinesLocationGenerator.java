@@ -11,6 +11,10 @@ public class MinesLocationGenerator {
 	Set<Location> minesLocations;
 
 	
+	public int getNumberOfMines() {
+		return numberOfMines;
+	}
+
 	public MinesLocationGenerator (int rows, int columns){
 		this.rows = rows;
 		this.columns = columns;
