@@ -27,14 +27,18 @@ public class Grid {
 	}
 	
 	public void createScene () {
+		MinesLocationGenerator msGenerator = new MinesLocationGenerator(maxRow, maxColumn);
+		Set<Location> minesLocation = msGenerator.generateMinesLocations();
+		for (Location mineLocation : minesLocation) {
+			scene[mineLocation.getRow()][mineLocation.getColumn()] = new Mine();
+		}
 		
-		// Objecto delegado de la lógica de cuantas minas y celdas ubicar
-		CellLogicGenerator objectsGenerator = new CellLogicGenerator(maxRow, maxColumn);
-		
-		// Recorre la matriz y va agregando los objetos que le pasa objectsGenerator
 		for (int row = 0; row < maxRow; row ++) {
 			 for (int column = 0; column < maxColumn; column++) {
-				 scene[row][column] = objectsGenerator.getNewObject();
+				 if (scene[row][column] == null) {
+					 scene[row][column] = new EmptyCell();
+				 }
+				 
 			 }
 		}
 		
@@ -51,7 +55,7 @@ public class Grid {
 			 }
 		}
 	}
-
+	
 	public Cell getCell (int row, int column) {
 		return scene[row][column];
 	}

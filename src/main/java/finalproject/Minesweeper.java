@@ -3,6 +3,8 @@ package finalproject;
 import java.awt.DisplayMode;
 import java.util.Set;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
+
 import com.despegar.highflight.utils.Matrix2DCellPosition;
 import com.despegar.highflight.utils.MatrixUtils;
 
@@ -15,26 +17,18 @@ public class Minesweeper implements IMinesweeper{
 		grid = new Grid(rows, columns);
 		grid.createScene();
 		
-		System.out.println(grid.numberOfMines + " minas generadas.");
+//		System.out.println(grid.numberOfMines + " minas generadas.");
 	}
 
 	public void uncover(int row, int col) {
-		uncoveredCell = grid.getCell(row, col);
-		uncoveredCell.setOpened(true);
-
-		if (isGameOver()) {
-			System.out.println("Perdiste");
-			
+		if (row >= grid.maxRow | col >= grid.maxColumn) {
+			System.out.println("Valor fuera de la matriz");
 		} else {
-			grid.getCell(row, col).setOpened(true);
+			uncoveredCell = grid.getCell(row, col);
+			uncoveredCell.setOpened(true);
 			grid.cascade(row, col);
-			display();
 		}
-		
-		if (isWinningGame()) {
-			System.out.println("Ganaste");
-			displayInternal();
-		}
+
 	}
 
 	public void flagAsMine(int row, int col) {
@@ -58,9 +52,14 @@ public class Minesweeper implements IMinesweeper{
 	}
 
 	public boolean isGameOver() {
-		if (uncoveredCell.isMine()) {
-			return true;
-		} else {
+		
+		try {
+			if (uncoveredCell.isMine()) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (NullPointerException e) {
 			return false;
 		}
 	}
